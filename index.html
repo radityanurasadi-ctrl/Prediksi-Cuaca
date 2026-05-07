@@ -581,7 +581,10 @@
         }
 
         // Call init on load
-        document.addEventListener('DOMContentLoaded', initCities);
+        document.addEventListener('DOMContentLoaded', () => {
+            initCities();
+            updateDateTime();
+        });
 
         let currentLang = 'en';
 
@@ -596,14 +599,39 @@
                 el.innerText = el.getAttribute(`data-${currentLang}`);
             });
 
-            // Update Date (Simple Example)
+            // Update Date and Time immediately
+            updateDateTime();
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const locale = currentLang === 'en' ? 'en-US' : 'id-ID';
+            
+            const dateOptions = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            
+            const timeOptions = { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: false
+            };
+
+            const dateStr = now.toLocaleDateString(locale, dateOptions);
+            const timeStr = now.toLocaleTimeString(locale, timeOptions);
+            
             const dateEl = document.getElementById('current-date');
-            if (currentLang === 'id') {
-                dateEl.innerText = "Senin, 24 Mei 2024";
-            } else {
-                dateEl.innerText = "Monday, 24 May 2024";
+            if (dateEl) {
+                dateEl.innerText = `${dateStr} • ${timeStr}`;
             }
         }
+
+        // Update clock every second
+        setInterval(updateDateTime, 1000);
     </script>
 </body>
 
